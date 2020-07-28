@@ -1,8 +1,23 @@
 class Particle {
-    colour = "";
+    colours = {
+        "-1": "rgb(255,255,255)",
+        "0": "rgb(0,0,0)",
+        "1": "rgb(148,176,255)",
+        "1.1": "rgb(125,160,255)",
+        "1.2": "rgb(83,136,252)",
+        "1.3": "rgb(82,126,247)",
+        "1.4": "rgb(70,118,250)",
+        "1.5": "rgb(46,102,255)",
+        "1.6": "rgb(33,92,255)",
+        "1.7": "rgb(23,85,255)",
+        "1.8": "rgb(18,81,255)",
+        "1.9": "rgb(10,75,255)",
+        "2": "rgb(0,68,255)",
+    };
     position = null
+    mass = 0;
+
     constructor(x, y) {
-        this.colour = `rgb(${Utilities.getRandomInt(0, 255)}, ${Utilities.getRandomInt(0, 255)}, ${Utilities.getRandomInt(0, 255)})`
         this.position = new Vector(x, y);
     }
 
@@ -11,7 +26,20 @@ class Particle {
         context.rect(this.position.x, this.position.y, 10, 10);
         context.closePath();
 
-        this.setDrawModes(context, "", this.colour);
+        this.setDrawModes(context, "", this.findColourFromMass());
+    }
+
+    findColourFromMass() {
+        let keys = Object.keys(this.colours);
+        for (let i = 0; i < keys.length; i++) {
+            let keyAsNumber = Number(keys[i]);
+            if (this.mass <= keyAsNumber)
+                return this.colours[keys[i]];
+        }
+    }
+
+    update() {
+
     }
 
     setDrawModes(context, strokeStyle, fillStyle) {
