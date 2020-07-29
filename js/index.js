@@ -62,6 +62,7 @@ class Simulation {
             this.grid.push([]);
             for (let y = 0; y < this.getWindowHeight() / 10; y++) {
                 this.grid[x].push(new Particle(x * 10, y * 10));
+                this.grid[x][y].maxMass = 1 + (y * this.grid[x][y].maxIncrease);
             }
         }
 
@@ -74,12 +75,29 @@ class Simulation {
         }
     }
 
-    update() {
+    copyGrid() {
+        let copy = []
         this.grid.forEach(x => {
+            copy.push([]);
             x.forEach(y => {
-                y.update();
+                copy[copy.length - 1].push(Utilities.CloneParticle(y));
             })
         })
+
+        return copy;
+    }
+
+    update() {
+        let gridCopy = this.copyGrid();
+
+        for (let x = 0; x < this.grid.length; x++) {
+            for (let y = 0; y < this.grid[x].length; y++) {
+                if (this.grid[x][y].mass > 0)
+                    gridCopy[x][y].update(gridCopy[x][y + 1], gridCopy[x - 1][y], gridCopy[x + 1][y], gridCopy[x][y - 1]);
+            }
+        }
+
+        this.grid = gridCopy;
     }
 
     draw() {

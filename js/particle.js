@@ -17,6 +17,8 @@ class Particle {
     position = null
     mass = 0;
     keys = Object.keys(this.colours);
+    maxIncrease = 0.01;
+    maxMass = 0;
 
     constructor(x, y) {
         this.keys = this.keys.sort();
@@ -39,8 +41,36 @@ class Particle {
         }
     }
 
-    update() {
+    updateBottom(bottom) {
+        if (bottom.mass >= 0 && bottom.mass < bottom.maxMass) { //if not stone and not full
+            let needed = bottom.maxMass - bottom.mass;
 
+            if (needed >= this.mass && this.mass > 0) {
+                let canProvide = this.mass
+                bottom.mass += canProvide;
+                this.mass -= canProvide;
+            } else {
+                if (needed != 0 && this.mass > 0) {
+                    needed = this.mass - needed;
+                    bottom.mass += needed;
+                    this.mass -= needed;
+                }
+            }
+        }
+    }
+
+    updateLeftAndRight(left, right) {
+
+    }
+
+    updateTop(top) {
+
+    }
+
+    update(bottom, left, right, top) {
+        this.updateBottom(bottom);
+        this.updateLeftAndRight(left, right);
+        this.updateTop(top);
     }
 
     setDrawModes(context, strokeStyle, fillStyle) {
