@@ -1,6 +1,6 @@
 class Particle {
     colours = {
-        "-1": "rgb(255,255,255)",
+        "-1": "rgb(225,225,225)",
         "0": "rgb(0,0,0)",
         "1": "rgb(148,176,255)",
         "1.1": "rgb(125,160,255)",
@@ -16,8 +16,10 @@ class Particle {
     };
     position = null
     mass = 0;
+    keys = Object.keys(this.colours);
 
     constructor(x, y) {
+        this.keys = this.keys.sort();
         this.position = new Vector(x, y);
     }
 
@@ -30,11 +32,10 @@ class Particle {
     }
 
     findColourFromMass() {
-        let keys = Object.keys(this.colours);
-        for (let i = 0; i < keys.length; i++) {
-            let keyAsNumber = Number(keys[i]);
+        for (let i = 0; i < this.keys.length; i++) {
+            let keyAsNumber = Number(this.keys[i]);
             if (this.mass <= keyAsNumber)
-                return this.colours[keys[i]];
+                return this.colours[this.keys[i]];
         }
     }
 

@@ -64,6 +64,14 @@ class Simulation {
                 this.grid[x].push(new Particle(x * 10, y * 10));
             }
         }
+
+        //set border as stone
+        for (let x = 0; x < this.grid.length; x++) {
+            for (let y = 0; y < this.grid[x].length; y++) {
+                if (x == 0 || y == 0 || x == this.grid.length - 1 || y == this.grid[x].length - 1)
+                    this.grid[x][y].mass = -1;
+            }
+        }
     }
 
     update() {
