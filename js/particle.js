@@ -1,28 +1,15 @@
 class Particle {
-    colours = {
-        "-1": "rgb(225,225,225)",
-        "0": "rgb(0,0,0)",
-        "1": "rgb(148,176,255)",
-        "1.1": "rgb(125,160,255)",
-        "1.2": "rgb(83,136,252)",
-        "1.3": "rgb(82,126,247)",
-        "1.4": "rgb(70,118,250)",
-        "1.5": "rgb(46,102,255)",
-        "1.6": "rgb(33,92,255)",
-        "1.7": "rgb(23,85,255)",
-        "1.8": "rgb(18,81,255)",
-        "1.9": "rgb(10,75,255)",
-        "2": "rgb(0,68,255)",
-    };
+    colours = {};
     position = null
     mass = 0;
-    keys = Object.keys(this.colours);
-    maxIncrease = 0.01;
-    maxMass = 0;
+    keys = null
+    maxIncrease = 0.05;
+    maxMass = 1;
 
-    constructor(x, y) {
-        this.keys = this.keys.sort();
+    constructor(x, y, colours) {
         this.position = new Vector(x, y);
+        this.colours = colours;
+        this.keys = Object.keys(this.colours).sort();
     }
 
     draw(context) {
@@ -34,9 +21,10 @@ class Particle {
     }
 
     findColourFromMass() {
-        for (let i = 0; i < this.keys.length; i++) {
-            let keyAsNumber = Number(this.keys[i]);
-            if (this.mass <= keyAsNumber)
+        for (let i = 0; i < this.keys.length - 1; i++) {
+            let firstKeyAsNumber = Number(this.keys[i]);
+            let secondKeyAsNumber = Number(this.keys[i + 1]);
+            if (this.mass >= firstKeyAsNumber && this.mass < secondKeyAsNumber)
                 return this.colours[this.keys[i]];
         }
     }
@@ -46,9 +34,8 @@ class Particle {
             let needed = bottom.maxMass - bottom.mass;
 
             if (needed >= this.mass && this.mass > 0) {
-                let canProvide = this.mass
-                bottom.mass += canProvide;
-                this.mass -= canProvide;
+                bottom.mass += this.mass;
+                this.mass -= this.mass;
             } else {
                 if (needed != 0 && this.mass > 0) {
                     needed = this.mass - needed;
@@ -71,6 +58,9 @@ class Particle {
         this.updateBottom(bottom);
         this.updateLeftAndRight(left, right);
         this.updateTop(top);
+
+        if (top.maxMass >= 1)
+            this.maxMass = top.maxMass + this.maxIncrease;
     }
 
     setDrawModes(context, strokeStyle, fillStyle) {

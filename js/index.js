@@ -1,5 +1,6 @@
 class Simulation {
     grid = [];
+    colours = {};
     constructor() {
         this.setupCanvas();
         this.setupEvents();
@@ -57,12 +58,25 @@ class Simulation {
         });
     }
 
+    setupColours() {
+        let colours = {
+            "-1": "#eaeaea",
+            "0": "#000000",
+            "1": "#94b1ff",
+            "2": "#0044ff"
+        };
+        for (let i = 0.1; i < 1; i += 0.1) {
+            colours[String(1 + i)] = Utilities.lerpColor(colours["1"], colours["2"], i);
+        }
+        return colours;
+    }
+
     setupGrid() {
+        this.colours = this.setupColours();
         for (let x = 0; x < this.getWindowWidth() / 10; x++) {
             this.grid.push([]);
             for (let y = 0; y < this.getWindowHeight() / 10; y++) {
-                this.grid[x].push(new Particle(x * 10, y * 10));
-                this.grid[x][y].maxMass = 1 + (y * this.grid[x][y].maxIncrease);
+                this.grid[x].push(new Particle(x * 10, y * 10, this.colours));
             }
         }
 
@@ -80,7 +94,7 @@ class Simulation {
         this.grid.forEach(x => {
             copy.push([]);
             x.forEach(y => {
-                copy[copy.length - 1].push(Utilities.CloneParticle(y));
+                copy[copy.length - 1].push(Utilities.cloneParticle(y, this.colours));
             })
         })
 
